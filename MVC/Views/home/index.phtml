@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="row">
+        <?php if (isset($this->error) === true) : ?>
+            <div class="alert alert-danger">
+                <?= $this->error ?>
+            </div>
+        <?php endif; ?>
+        <div class="col-md-10 pd-20">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Upload your csv file</h1>
+                </div>
+            </div>
+            <hr>
+            <form action="" method="post" enctype="multipart/form-data" id="fileForm">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="file">Choose file to upload</label>
+                        <input type="file" id="file" name="file" value="Upload File"/>
+                    </div>
+                </div>
+                <div class="createJobForm">
+                    <button class="btn-primary">Post file</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <?php if (isset($this->errorProducts)) : ?>
+                <div class="alert alert-info">
+                    <?= $this->errorProducts ?>
+                </div>
+            <?php else: ?>
+                <div class="row">
+                    <table class="table">
+                        <thead class="thead-inverse">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Qty</th>
+                            <th>Warehouses</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <?php foreach ($this->products as $product): ?>
+                            <?php /** @var \MVC\Models\Warehouse $product */ ?>
+                            <tr>
+                                <td><?= $product->getProductName(); ?></td>
+                                <td><?= $product->getQuantity(); ?></td>
+                                <td>
+                                    <?php if($product->getWH1()>0):?>
+                                        WH1
+                                        <?php if($product->getWH2()>0):?>
+                                            , WH2
+                                        <?php endif;?>
+                                    <?php endif;?>
+                                    <?php if($product->getWH2()>0):?>
+                                        WH2
+                                    <?php endif;?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+
