@@ -50,15 +50,9 @@
                                 <td><?= $product->getProductName(); ?></td>
                                 <td><?= $product->getQuantity(); ?></td>
                                 <td>
-                                    <?php if($product->getWH1()>0):?>
-                                        WH1
-                                        <?php if($product->getWH2()>0):?>
-                                            , WH2
-                                        <?php endif;?>
-                                    <?php endif;?>
-                                    <?php if($product->getWH2()>0):?>
-                                        WH2
-                                    <?php endif;?>
+                                  <?php
+                                  echo  $product->whsCodes;
+                                 // $product->whsCodes; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

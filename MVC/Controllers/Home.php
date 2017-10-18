@@ -29,41 +29,38 @@ class Home extends Controller
                     //$rows = array();
                     $header = false;
                     while (($data = fgetcsv($file, 0, ",")) != FALSE) {
-                        //var_dump($data);
+                        $WHs = [];
 
                         if (false === $header) {
                             $header = $data;
                         } else {
-                            //$rows[] = array_combine($header, $data);
                             $repo = new Repository(Warehouse::class);
 
                             /** @var Warehouse $product */
                             $product = $repo->findOneBy(['productName' => $data[0]]);
+
+
                             $qty = (int)$data[1];
                             if ($product === null) {
 
                                 $product = new Warehouse();
-
                                 $product->setProductName($data[0]);
 
                                 if ($qty > 0) {
                                     $product->setQuantity($qty);
 
-                                    if ($data[2] == 'WH1') {
-                                        $product->setWH1($qty);
-                                    }
+                                    $WHs[$data[2]] = $qty;
 
-                                    if ($data[2] == 'WH2') {
-                                        $product->setWH2($qty);
-                                    }
+                                    $product->setWH($WHs);
+
                                 }
 
                                 $repo->save($product);
 
                             } else {
                                 $qtyIsset = (int)$product->getQuantity();
-                                $qtyWT1 = (int)$product->getWH1();
-                                $qtyWT2 = (int)$product->getWH2();
+
+                                $qtyWT = $product->getWH();
 
                                 if ($qty > 0 || $qtyIsset > 0) {
 
@@ -71,15 +68,15 @@ class Home extends Controller
 
                                     $product->setQuantity($qtyIsset);
 
-                                    if ($data[2] == 'WH1') {
-                                        $qtyWT1 = $qtyWT1 + $qty;
-                                        $product->setWH1($qtyWT1);
+                                    foreach ($qtyWT as $keyWarehouse=>$qtyWarehouse){
+                                        if(isset($qtyWT[$keyWarehouse])){
+                                            $qtyWT[$keyWarehouse] = $qtyWarehouse + $qty;
+                                        }else{
+                                            $qtyWT[$keyWarehouse] = $qtyWarehouse;
+                                        }
+                                        $product->setWH($qtyWT);
                                     }
 
-                                    if ($data[2] == 'WH2') {
-                                        $qtyWT2 = $qtyWT2 + $qty;
-                                        $product->setWH2($qtyWT2);
-                                    }
                                 }
                                 $repo->save($product, 'name', $data[0]);
                             }
@@ -102,6 +99,16 @@ class Home extends Controller
             if ($products == null) {
                 $this->getView()->assign('errorProducts', 'No products in warehouses');
             } else {
+
+                foreach ($products as $key=>$product){
+                    $whs=[];
+                    $wh = $product->getWH();
+                    $whs[] = array_keys($wh);
+                    $whsCodes = implode(',', $whs[0]);
+                    $product->whsCodes = $whsCodes;
+
+                }
+
                 $this->getView()->assign('products', $products);
             }
             $this->getView()->view('home/index');

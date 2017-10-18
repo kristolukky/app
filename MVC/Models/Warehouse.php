@@ -29,16 +29,10 @@ class Warehouse
   private $quantity;
 
   /**
-   * @var int
-   * @column(WH1)
+   * @var string
+   * @column(WH)
    */
-  private $WH1;
-
-    /**
-     * @var int
-     * @column(WH2)
-     */
-  private $WH2;
+  private $WH;
 
 
   /**
@@ -68,18 +62,11 @@ class Warehouse
   /**
    * @return int|null
    */
-  public function getWH1()
+  public function getWH()
   {
-    return (int)$this->WH1;
+    return json_decode($this->WH, true);
   }
-
-    /**
-     * @return int|null
-     */
-  public function getWH2()
-  {
-      return (int)$this->WH2;
-  }
+  
 
   /**
    * @param string $productName
@@ -98,20 +85,21 @@ class Warehouse
   }
 
   /**
-   * @param int $WH1
-   * @return int
+   * @param string $WH
+   * @return string
    */
-  public function setWH1($WH1)
+  public function setWH($WH)
   {
-    $this->WH1 = $WH1;
+    $this->WH = json_encode($WH);
   }
 
-    /**
-     * @param int $WH2
-     * @return int
-     */
-    public function setWH2($WH2)
-    {
-        $this->WH2 = $WH2;
-    }
+  /**
+   * @param array $codewarehouses
+   * @return string
+   */
+  public function getWHString($codewarehouses)
+  {
+    return implode(',', $codewarehouses);
+  }
+  
 }
